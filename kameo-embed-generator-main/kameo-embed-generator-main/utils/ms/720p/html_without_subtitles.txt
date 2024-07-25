@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            margin:0;
+            padding: 0;
+            top:0;
+            left:0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        #video {
+            position: absolute;
+            width: 100% !important;
+            height: 100% !important;
+        }
+        .jw-rightclick { display: none !important; }
+        .jwplayer .jw-slider-horizontal.jw-chapter-slider-time .jw-slider-container .jw-timesegment-progress {background-color: red;}
+        .jwplayer .jw-controlbar .jw-progress {
+            background: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="video"></div>
+    <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool' url="https://small.fileditchnew.ch/s0/pJdPPZSNLfunqxMEKIQ.mp4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+    <script src="https://pub-1ebb19a2c3264d2a948e63f053baab0a.r2.dev/player.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const vsplayer = jwplayer("video").setup({
+                image:"_THISIMAGE",
+                playbackRateControls:true,
+                sources:[{
+                    file: "REPLACE_M3U8_LINK",
+                    "type": "hls",
+                }],
+                qualityLabels:{
+                    "_DEUX":"720p",
+                    "_TROIS":"576p",
+                    "_QUATRE":"480p",
+                    "_CINQ":"360p",
+                    "_SIX":"240p",
+                    "_SEPT":"144p"
+                },
+                "cast": {}
+            });
+            function ilerlet(gelen) {
+                vsplayer.seek(gelen);
+            }
+            var playerContainer;
+            vsplayer.on("ready", function() {
+                playerContainer = vsplayer.getContainer();
+                $(playerContainer).find(".jw-settings-submenu-fontFamily").hide().remove();
+                $(playerContainer).find("button[aria-controls='jw-settings-submenu-fontFamily']").hide().remove();
+                var titlePrimary = playerContainer.querySelector(".jw-title-primary");
+                var titleSecondary = playerContainer.querySelector(".jw-title-secondary");
+                var previewImage = playerContainer.querySelector(".jw-preview");
+                var playIcon = playerContainer.querySelector(".jw-display-icon-display");
+                var animatedItems = [titlePrimary, titleSecondary, previewImage, playIcon];
+                playerContainer.addEventListener("mouseenter", function() {
+                    animatedItems.forEach(function(element) {
+                        element.classList.add("shift");
+                    });
+                });
+                playerContainer.addEventListener("mouseleave", function() {
+                    animatedItems.forEach(function(element) {
+                        element.classList.remove("shift");
+                    });
+                });
+                var rewind = playerContainer.querySelector(".jw-display-icon-rewind");
+                var rewDiv = $(rewind).find(".jw-icon-rewind").clone();
+                $(rewDiv).addClass("forward").css("transform", "scaleX(-1)").attr("aria-label", "10 Saniye ileri sar").prependTo($(playerContainer).find(".jw-display-icon-next"));
+                $(playerContainer).find(".jw-display-icon-next .jw-icon-next").hide();
+                var rewindS = playerContainer.querySelector(".jw-button-container");
+                var $rew2Div = $(rewindS).find(".jw-icon-rewind");
+                var $clone = $rew2Div.clone();
+                $clone.addClass("forward").css("transform", "scaleX(-1)").attr("aria-label", "10 secondes en avance").insertAfter($rew2Div);
+            });
+            $(document).on("click", ".jw-icon-rewind.forward", function(e) {
+                var git = vsplayer.getPosition() + 10;
+                ilerlet(git);
+            });
+        });
+    </script>
+</body>
+</html>
